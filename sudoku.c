@@ -9,7 +9,7 @@
 
 /* 
 * struct to hold data passed to validation threads
-* contains starting position (row/col), puzzle size, gride reference, and result ponter
+* contains starting position (row/col), puzzle size, grid reference, and result pointer
 */  
 typedef struct {
 	int row;
@@ -20,7 +20,7 @@ typedef struct {
 } parameters;
 
 /*
-* validates a single row for for duplicate numbers (ignores 0s)
+* validates a single row for duplicate numbers (ignores 0s)
 * uses boolean array to track which numbers have been seen in the row
 * thread function for pthread - sets result to false if duplicates found
 */
@@ -54,7 +54,7 @@ void *checkRow(void *arg) {
 }
 
 /*
-* validates a single column for for duplicate numbers (ignores 0s)
+* validates a single column for duplicate numbers (ignores 0s)
 * uses boolean array to track which numbers have been seen in the column
 * thread function for pthread - sets result to false if duplicates found
 */
@@ -85,7 +85,7 @@ void *checkColumn(void *arg) {
 }
 
 /*
-* validates a single subgrid(box) for for duplicate numbers (ignores 0s)
+* validates a single subgrid (box) for duplicate numbers (ignores 0s)
 * subgrid size is sqrt(psize) * sqrt(psize), or 3x3 for a 9x9 puzzle
 * thread function for pthread - sets result to false if duplicates found
 */
@@ -99,11 +99,11 @@ void *checkSubGrid(void *arg) {
 
 	bool seen[psize+1];
 	for (int i = 0; i <= psize; i++) {
-			seen[i] = false;
+		seen[i] = false;
 	}
-	// iterate through al cells in this box_size * box_size subgrid
+	// iterate through all cells in this box_size * box_size subgrid
 	for (int r = 0; r < box_size; r++) {
-		for(int c = 0; c < box_size; c++) {
+		for (int c = 0; c < box_size; c++) {
 			int row = start_row + r;
 			int col = start_col + c;
 			int value = grid[row][col];
@@ -125,7 +125,7 @@ void *checkSubGrid(void *arg) {
 
 /*
 * creates multiple threads to validate all rows, columns, and subgrids in parallel
-* total threads = pzise (rows) + psize(columns) + num_subgrids (boxes)
+* total threads = psize (rows) + psize(columns) + num_subgrids (boxes)
 * waits for all threads to complete and aggregates results into *valid
 */
 void createThreads(int psize, int **grid, bool *valid) {
@@ -142,7 +142,7 @@ void createThreads(int psize, int **grid, bool *valid) {
 	}
 
 	int thread_index = 0;
-	// create on thread per row to validate each row
+	// create one thread per row to validate each row
 	for (int row = 1; row <= psize; row++) {
 		thread_data[thread_index].row = row;
 		thread_data[thread_index].psize = psize;
@@ -164,15 +164,15 @@ void createThreads(int psize, int **grid, bool *valid) {
 	}
 	// create one thread per subgrid to validate each box
 	for (int row = 1; row <= psize; row += box_size) {
-		for(int col = 1; col <= psize; col += box_size) {
+		for (int col = 1; col <= psize; col += box_size) {
 			thread_data[thread_index].column = col;
 			thread_data[thread_index].row = row;
 			thread_data[thread_index].psize = psize;
 			thread_data[thread_index].grid = grid;
 			thread_data[thread_index].result = &results[thread_index];
 		
-		pthread_create(&threads[thread_index], NULL, checkSubGrid, &thread_data[thread_index]);
-		thread_index++;
+			pthread_create(&threads[thread_index], NULL, checkSubGrid, &thread_data[thread_index]);
+			thread_index++;
 		}
 	}
 	// wait for all threads to complete
@@ -183,7 +183,7 @@ void createThreads(int psize, int **grid, bool *valid) {
 	// aggregate results (puzzle is only valid if all threads report valid)
 	*valid = true;
 	for (int i = 0; i < num_threads; i++) {
-		if(!results[i]) {
+		if (!results[i]) {
 			*valid = false;
 			break;
 		}
@@ -207,7 +207,7 @@ void checkPuzzle(int psize, int **grid, bool *complete, bool *valid) {
 		for (int col = 1; col <= psize; col++) {
 			if (grid[row][col] == 0) {
 				*complete = false;
-				// puzzle incomplete
+				// puzzle is incomplete
 				return; 
 			} 
 		}
@@ -218,7 +218,7 @@ void checkPuzzle(int psize, int **grid, bool *complete, bool *valid) {
 
 /*
 * checks if placing 'num' at position (row, col) violates Sudoku rules
-* returns false if num already exists in  the same row, column, or subgrid
+* returns false if num already exists in the same row, column, or subgrid
 * returns true if placement is valid
 */
 bool checkPlacement(int psize, int **grid, int row, int col, int num) {

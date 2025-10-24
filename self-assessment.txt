@@ -1,6 +1,10 @@
+To ensure all libraries are linked, my runit.sh file should be used.
+
 My program: 
 
 - Can verify whether the puzzle is valid or not.
+
+- Can complete simple and complex puzzles.
 
 - Starts/joins multiple threads to speed up operation.
 
