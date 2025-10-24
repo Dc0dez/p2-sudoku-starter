@@ -1,0 +1,9 @@
+My program: 
+
+- Can verify whether the puzzle is valid or not.
+
+- Starts/joins multiple threads to speed up operation.
+
+- Can verify for an NxN complete puzzle whether it is valid or not.
+
+- Uses a minimum of 3 threads. 
